@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/hand_tracking_module" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/post-estimation" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/post_estimation_module" vcs="Git" />
+  </component>
+</project>
