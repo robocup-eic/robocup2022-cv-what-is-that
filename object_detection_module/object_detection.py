@@ -23,6 +23,7 @@ DEVICE = "cpu"
 CFG_PATH = CONFIG_PATH + 'yolor_p6.cfg'
 IMAGE_SIZE = 1280
 
+
 class ObjectDetection:
 
     def __init__(self):
@@ -51,6 +52,9 @@ class ObjectDetection:
         return list(filter(None, names))
 
     def detect(self, input_image):
+
+        # preprocess image
+        input_image = self.preprocess(input_image)
 
         # Run inference
         t0 = time.time()
@@ -116,6 +120,9 @@ class ObjectDetection:
         return input_image
 
     def get_bbox(self, input_image):
+
+        #preprocess image
+        input_image = self.preprocess(input_image)
 
         # object bbox list
         bbox_list = []
@@ -188,12 +195,15 @@ class ObjectDetection:
     def format_bbox(self, bbox_list):
         format_bboxs = []
         for bbox in bbox_list:
-            # we don't care person
-            if bbox[4] == 'person':
-                continue
-            else:
-                format_bboxs.append([bbox[4], tuple([bbox[0], bbox[1], bbox[2] - bbox[0], bbox[3] - bbox[1]]), False])
+            format_bboxs.append([bbox[4], tuple([bbox[0], bbox[1], bbox[2] - bbox[0], bbox[3] - bbox[1]]), False])
         return format_bboxs
+
+    def preprocess(self, img):
+        npimg = np.array(img)
+        image = npimg.copy()
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        return image
+
 
 def main():
     # create model
@@ -201,23 +211,18 @@ def main():
 
     # load our input image and grab its spatial dimensions
     img = cv2.imread("./test1.jpg")
-    cv2.imshow('test1', img)
 
-    # preprocess image
-    npimg = np.array(img)
-    image = npimg.copy()
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
+    # choose one method
     with torch.no_grad():
         # get detected image
-        res = OD.detect(image)
+        res = OD.detect(img)
 
         # get bboxs of object in images
-        bboxs = OD.get_bbox(image)
+        bboxs = OD.get_bbox(img)
 
     # show output
     image = cv2.cvtColor(res, cv2.COLOR_BGR2RGB)
-    cv2.imshow('yolor_test1', image)
+    cv2.imshow('yolor', image)
     cv2.waitKey(0)
 
 
