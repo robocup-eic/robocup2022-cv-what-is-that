@@ -1,3 +1,5 @@
+object_detection_module/config
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

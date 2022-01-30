@@ -6,12 +6,12 @@ import torch
 from numpy import random
 import numpy as np
 
-from utils.datasets import letterbox
-from utils.general import non_max_suppression, scale_coords, xyxy2xywh
-from utils.plots import plot_one_box
-from utils.torch_utils import select_device, time_synchronized
+from .utils.datasets import letterbox
+from .utils.general import non_max_suppression, scale_coords, xyxy2xywh
+from .utils.plots import plot_one_box
+from .utils.torch_utils import select_device, time_synchronized
 
-from models.models import *
+from .models.models import *
 
 
 # path

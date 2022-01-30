@@ -2,6 +2,7 @@ from object_detection_module.object_detection import ObjectDetection
 from hand_tracking_module.hand_tracking import HandTracking
 import torch
 import numpy as np
+import mediapipe as mp
 import cv2
 
 mp_hands = mp.solutions.hands
