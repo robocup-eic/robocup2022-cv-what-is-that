@@ -12,10 +12,11 @@ from .utils.plots import plot_one_box
 from .utils.torch_utils import select_device, time_synchronized
 
 from .models.models import *
-
+import os
 
 # path
-CONFIG_PATH = 'config/'
+
+CONFIG_PATH = 'object_detection_module/config/'
 WEIGHTS_PATH = CONFIG_PATH + 'yolor_p6.pt'
 NAMES_PATH = CONFIG_PATH + 'coco.names'
 DEVICE = "cpu"
@@ -187,7 +188,11 @@ class ObjectDetection:
     def format_bbox(self, bbox_list):
         format_bboxs = []
         for bbox in bbox_list:
-            format_bboxs.append([bbox[4], tuple([bbox[0], bbox[1], bbox[2] - bbox[0], bbox[3] - bbox[1]]), False])
+            # we don't care person
+            if bbox[4] == 'person':
+                continue
+            else:
+                format_bboxs.append([bbox[4], tuple([bbox[0], bbox[1], bbox[2] - bbox[0], bbox[3] - bbox[1]]), False])
         return format_bboxs
 
 def main():

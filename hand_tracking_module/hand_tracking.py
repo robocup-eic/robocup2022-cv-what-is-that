@@ -18,9 +18,7 @@ class HandTracking:
     def read_results(self, image, hands_results):
         self.frame_width, self.frame_height = int(image.shape[1]), int(image.shape[0])
         self.image = image
-
-        if hands_results.multi_hand_landmarks:
-            self.hands_results = hands_results
+        self.hands_results = hands_results
 
 
     def get_distance(self, p1, p2):
@@ -178,7 +176,7 @@ def main():
     HT = HandTracking()
 
     # capture from live web cam
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
     frame_width, frame_height = int(cap.get(3)), int(cap.get(4))
 
     start = time.time()
@@ -204,8 +202,9 @@ def main():
         # demo
         # box_list = [[name, (x,y,w,h), is_pointed], ...]
         box_list = [["A", (100, 150, 30, 40), False], ["B", (150, 250, 60, 60), False],
-                    ["C", (400, 100, 20, 25), False], ["D", (500, 400, 40, 40), False],
-                    ["E", (150, 400, 50, 60), False]]
+                   ["C", (400, 100, 20, 25), False], ["D", (500, 400, 40, 40), False],
+                   ["E", (150, 400, 50, 60), False]]
+        # box_list = []
 
         # finger_list = [(startindex, midindex, length), ...]
         finger_list = [(7, 8, 200)]

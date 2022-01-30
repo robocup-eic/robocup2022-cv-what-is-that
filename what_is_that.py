@@ -14,8 +14,6 @@ class WhatIsThat:
         self.HT = HandTracking()
 
     def what_is_that(self, img):
-        bbox_list = self.OD.get_bbox(img)
-        formatted_bbox = self.OD.format_bbox(bbox_list)
 
         image = img.copy()
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -24,6 +22,8 @@ class WhatIsThat:
 
         # hands detection
         hands_results = self.HT.track(image)
+        bbox_list = self.OD.get_bbox(image)
+        formatted_bbox = self.OD.format_bbox(bbox_list)
 
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -40,9 +40,9 @@ class WhatIsThat:
         if self.HT.hands_results.multi_hand_landmarks:
             self.HT.draw_hand()
             self.HT.draw_hand_label()
-            obj_list = self.HT.point_to(bbox_list, finger_list)
+            obj_list = self.HT.point_to(formatted_bbox, finger_list)
 
-        self.HT.draw_boxes(bbox_list)
+        self.HT.draw_boxes(formatted_bbox)
 
         cv2.imshow('result image', image)
         cv2.waitKey()
@@ -53,12 +53,25 @@ def main():
     WID = WhatIsThat()
 
     # load img
-    img_test = cv2.imread('test_pics/test6.jpg')
+    img_test = cv2.imread('test_pics/test_hand.jpg')
 
     # feed img to model
     i_see = WID.what_is_that(img_test)
 
     print(i_see)
+
+    # # test
+    # while True:
+    #     a = int(input())
+    #     if a == 0:
+    #         break
+    #     img_path = 'test_pics/test' + str(a) + '.jpg'
+    #     img_test = cv2.imread(img_path)
+    #     print(img_test.shape)
+    #     i_see = WID.what_is_that(img_test)
+
+
+
 
 
 if __name__ == '__main__':
