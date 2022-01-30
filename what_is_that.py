@@ -60,19 +60,6 @@ def main():
 
     print(i_see)
 
-    # # test
-    # while True:
-    #     a = int(input())
-    #     if a == 0:
-    #         break
-    #     img_path = 'test_pics/test' + str(a) + '.jpg'
-    #     img_test = cv2.imread(img_path)
-    #     print(img_test.shape)
-    #     i_see = WID.what_is_that(img_test)
-
-
-
-
 
 if __name__ == '__main__':
     main()
