@@ -1,9 +1,11 @@
 from object_detection_module.object_detection import ObjectDetection
 from hand_tracking_module.hand_tracking import HandTracking
+from custom_socket import CustomSocket
 import torch
 import numpy as np
 import mediapipe as mp
 import cv2
+import socket
 
 mp_hands = mp.solutions.hands
 
@@ -44,22 +46,25 @@ class WhatIsThat:
 
         self.HT.draw_boxes(formatted_bbox)
 
-        cv2.imshow('result image', image)
-        cv2.waitKey()
+        # cv2.imshow('result image', image)
+        # cv2.waitKey()
+        return obj_list
 
 
 def main():
-    # init model
+
     WID = WhatIsThat()
 
-    # load img
-    img_test = cv2.imread('test_pics/test_hand.jpg')
+    server = CustomSocket(socket.gethostname(),10000)
+    server.startServer()
 
-    # feed img to model
-    i_see = WID.what_is_that(img_test)
-
-    print(i_see)
-
+    while True :
+        conn, addr = server.sock.accept()
+        print("Client connected from",addr)
+        data = server.recvMsg(conn)
+        img = np.frombuffer(data,dtype=np.uint8).reshape(720,1080,3)
+        result = WID.what_is_that(img)
+        server.sendMsg(conn,str(result))
 
 if __name__ == '__main__':
     main()
