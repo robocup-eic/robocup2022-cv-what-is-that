@@ -195,7 +195,10 @@ class ObjectDetection:
     def format_bbox(self, bbox_list):
         format_bboxs = []
         for bbox in bbox_list:
-            format_bboxs.append([bbox[4], tuple([bbox[0], bbox[1], bbox[2] - bbox[0], bbox[3] - bbox[1]]), False])
+            if bbox[4] == 'person':
+                pass
+            else:
+                format_bboxs.append([bbox[4], tuple([bbox[0], bbox[1], bbox[2] - bbox[0], bbox[3] - bbox[1]]), False])
         return format_bboxs
 
     def preprocess(self, img):
