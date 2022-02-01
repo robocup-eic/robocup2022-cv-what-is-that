@@ -1,6 +1,7 @@
 import socket
 import struct
 import numpy as np
+import json
 
 class CustomSocket :
 
@@ -33,9 +34,9 @@ class CustomSocket :
 		temp = msg
 		try :
 			temp = msg.encode('utf-8')
-		except UnicodeDecodeError as e :
+		except Exception as e :
 			# This message is an image
-			temp = temp
+			print("This is an image")
 		msg = struct.pack('>I', len(msg)) + temp
 		sock.sendall(msg)
 
@@ -49,12 +50,19 @@ class CustomSocket :
 		return data
 
 	def recvMsg(self,sock) :
+
 		rawMsgLen = self.recvall(sock, 4)
 		if not rawMsgLen :
 			return None
 		msgLen = struct.unpack('>I', rawMsgLen)[0]
+
 		return self.recvall(sock, msgLen)
 
+	def whatIsThat(self,image) :
+		self.sendMsg(self.sock,image.tobytes())
+		result = self.recvMsg(self.sock)
+		result = result.decode('utf-8')
+		return json.loads(result)
 
 def main() :
 
@@ -67,7 +75,7 @@ def main() :
 		data = server.recvMsg(conn)
 		img = np.frombuffer(data,dtype=np.uint8).reshape(720,1080,3)
 		print(img)
-		server.sendMsg(conn,"Dick")
+		server.sendMsg(conn,["mock1"])
 
 if __name__ == '__main__' :
 	main()	

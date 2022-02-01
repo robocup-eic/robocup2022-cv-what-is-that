@@ -6,6 +6,7 @@ import numpy as np
 import mediapipe as mp
 import cv2
 import socket
+import json
 
 mp_hands = mp.solutions.hands
 
@@ -64,7 +65,10 @@ def main():
         data = server.recvMsg(conn)
         img = np.frombuffer(data,dtype=np.uint8).reshape(720,1080,3)
         result = WID.what_is_that(img)
-        server.sendMsg(conn,str(result))
+        res = {
+            "pointing_at" : result
+        }
+        server.sendMsg(conn,json.dumps(res))
 
 if __name__ == '__main__':
     main()
