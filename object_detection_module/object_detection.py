@@ -35,7 +35,7 @@ class ObjectDetection:
         # .cuda() #if you want cuda remove the comment
         self.model = Darknet(CFG_PATH, IMAGE_SIZE)
         self.model.load_state_dict(torch.load(WEIGHTS_PATH, map_location=self.device)['model'])
-        self.model.to(DEVICE).eval()
+        self.model.to(self.device).eval()
 
         if self.half:
             self.model.half()
@@ -72,7 +72,7 @@ class ObjectDetection:
 
         print("recieving image with shape {}".format(img.shape))
 
-        img = torch.from_numpy(img).to(DEVICE)
+        img = torch.from_numpy(img).to(self.device)
         # uint8 to fp16/32
         img = img.half() if self.half else img.float()
         # 0 - 255 to 0.0 - 1.0
@@ -143,7 +143,7 @@ class ObjectDetection:
 
         print("recieving image with shape {}".format(img.shape))
 
-        img = torch.from_numpy(img).to(DEVICE)
+        img = torch.from_numpy(img).to(self.device)
         # uint8 to fp16/32
         img = img.half() if self.half else img.float()
         # 0 - 255 to 0.0 - 1.0
