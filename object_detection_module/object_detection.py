@@ -19,7 +19,7 @@ import os
 CONFIG_PATH = 'object_detection_module/config/'
 WEIGHTS_PATH = CONFIG_PATH + 'yolor_p6.pt'
 NAMES_PATH = CONFIG_PATH + 'coco.names'
-DEVICE = "cpu"
+DEVICE = "0"
 CFG_PATH = CONFIG_PATH + 'yolor_p6.cfg'
 IMAGE_SIZE = 1280
 
@@ -27,6 +27,9 @@ IMAGE_SIZE = 1280
 class ObjectDetection:
 
     def __init__(self):
+        torch.cuda.empty_cache()
+        torch.cuda.set_per_process_memory_fraction(0.5, 0)
+
         self.device = select_device(DEVICE)
         # half precision only supported on CUDA
         self.half = self.device.type != 'cpu'
@@ -70,8 +73,6 @@ class ObjectDetection:
         img = img[:, :, ::-1].transpose(2, 0, 1)
         img = np.ascontiguousarray(img)
 
-        print("recieving image with shape {}".format(img.shape))
-
         img = torch.from_numpy(img).to(self.device)
         # uint8 to fp16/32
         img = img.half() if self.half else img.float()
@@ -81,14 +82,11 @@ class ObjectDetection:
             img = img.unsqueeze(0)
 
         # Inference
-        print("Inferencing ...")
         pred = self.model(img)[0]
 
         # Apply NMS
         pred = non_max_suppression(
             pred, conf_thres=0.4, iou_thres=0.5, classes=None, agnostic=False)
-
-        print("found {} object".format(len(pred)))
 
         # print string
         s = ""
@@ -134,14 +132,13 @@ class ObjectDetection:
         _ = self.model(img.half() if self.half else img) if self.device.type != 'cpu' else None
 
         # Padded resize
-        img = letterbox(input_image, new_shape=IMAGE_SIZE, auto_size=64)[0]
+        img = letterbox(input_image, new_shape=IMAGE_SIZE, auto_size=32)[0]
 
         # Convert
         # BGR to RGB, to 3x416x416
         img = img[:, :, ::-1].transpose(2, 0, 1)
         img = np.ascontiguousarray(img)
 
-        print("recieving image with shape {}".format(img.shape))
 
         img = torch.from_numpy(img).to(self.device)
         # uint8 to fp16/32
@@ -152,14 +149,12 @@ class ObjectDetection:
             img = img.unsqueeze(0)
 
         # Inference
-        print("Inferencing ...")
         pred = self.model(img)[0]
 
         # Apply NMS
         pred = non_max_suppression(
             pred, conf_thres=0.4, iou_thres=0.5, classes=None, agnostic=False)
 
-        print("found {} object".format(len(pred)))
 
         # print string
         s = ""

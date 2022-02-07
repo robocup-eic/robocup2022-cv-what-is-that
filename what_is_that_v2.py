@@ -1,14 +1,16 @@
-from object_detection_module.object_detection import ObjectDetection
-from hand_tracking_module.hand_tracking import HandTracking
-from custom_socket import CustomSocket
-import torch
-import numpy as np
-import mediapipe as mp
-import cv2
-import socket
 import json
+import socket
+
+import cv2
+import mediapipe as mp
+import numpy as np
+
+from custom_socket import CustomSocket
+from hand_tracking_module.hand_tracking import HandTracking
+from object_detection_module.object_detection import ObjectDetection
 
 mp_hands = mp.solutions.hands
+
 
 class WhatIsThat:
 
@@ -17,7 +19,6 @@ class WhatIsThat:
         self.HT = HandTracking()
 
     def what_is_that(self, img):
-
         image = img.copy()
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = cv2.flip(image, 1)
@@ -53,23 +54,27 @@ class WhatIsThat:
 
 
 def main():
-
     WID = WhatIsThat()
 
-    server = CustomSocket(socket.gethostname(),10000)
+    server = CustomSocket(socket.gethostname(), 10000)
     server.startServer()
 
-    while True :
+    while True:
         conn, addr = server.sock.accept()
-        print("Client connected from",addr)
-        data = server.recvMsg(conn)
-        img = np.frombuffer(data,dtype=np.uint8).reshape(720,1080,3)
-        with torch.no_grad():
-            result = WID.what_is_that(img)
-        res = {
-            "pointing_at" : result
-        }
-        server.sendMsg(conn,json.dumps(res))
+        print("Client connected from", addr)
+        while True:
+            try:
+                data = server.recvMsg(conn)
+                img = np.frombuffer(data, dtype=np.uint8).reshape(480, 640, 3)
+                result = WID.what_is_that(img)
+                res = {
+                    "pointing_at": result
+                }
+                server.sendMsg(conn, json.dumps(res))
+            except Exception as e:
+                print(e)
+                break
+
 
 if __name__ == '__main__':
     main()

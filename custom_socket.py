@@ -1,4 +1,5 @@
 import socket
+from socket import SOL_SOCKET, SO_REUSEADDR
 import struct
 import numpy as np
 import json
@@ -9,6 +10,7 @@ class CustomSocket :
 		self.host = host
 		self.port = port
 		self.sock = socket.socket()
+		self.sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 		self.isServer = False
 
 	def startServer(self) :
@@ -58,7 +60,7 @@ class CustomSocket :
 
 		return self.recvall(sock, msgLen)
 
-	def whatIsThat(self,image) :
+	def req(self,image) :
 		self.sendMsg(self.sock,image.tobytes())
 		result = self.recvMsg(self.sock)
 		result = result.decode('utf-8')
