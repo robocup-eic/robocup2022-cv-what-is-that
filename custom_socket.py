@@ -38,7 +38,8 @@ class CustomSocket :
 			temp = msg.encode('utf-8')
 		except Exception as e :
 			# This message is an image
-			print("This is an image")
+			# print("This is an image")
+			pass
 		msg = struct.pack('>I', len(msg)) + temp
 		sock.sendall(msg)
 

@@ -24,7 +24,6 @@ while True:
         break
 
     frame = cv2.resize(frame, (640, 480))
-    print(frame.shape)
 
     end = time.time()
     fps = 1 / (end - start)
@@ -37,9 +36,6 @@ while True:
         break
 
     result = c.req(frame)
-
-    print(result)
-    # print(result["result"])
 
     print(result['pointing_at'])
 
